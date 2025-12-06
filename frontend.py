@@ -1,6 +1,8 @@
 import customtkinter as ctk
 import pymongo as pymongo
 
+from backend import MONGO_URI
+
 # 1. GLOBAL SETTINGS
 ctk.set_appearance_mode("dark")        # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("blue")    # Themes: "blue" (standard), "green", "dark-blue"
@@ -9,6 +11,13 @@ class WeatherDashboard(ctk.CTk):
     def __init__(self):
         super().__init__()
 
+        # MongoDB Setup
+        self.client = pymongo.MongoClient(MONGO_URI)
+        self.db = self.client['weather_app']
+        self.collection = self.db['history']
+        self.setup_ui()
+
+    def setup_ui(self):
         # 2. WINDOW SETUP
         self.title("Weather Analytics")
         self.geometry("500x400")
@@ -19,8 +28,10 @@ class WeatherDashboard(ctk.CTk):
         self.title_label.pack(pady=20)
 
         # B. The Big Temperature
-        self.temp_label = ctk.CTkLabel(self, text="--°C", font=("Roboto", 80, "bold"), text_color="#3B8ED0")
+        
+        self.temp_label = ctk.CTkLabel(self, text="--°C", font=("Roboto", 80, "bold"), text_color="#1B9B37")
         self.temp_label.pack(pady=10)
+        
 
         # C. The Condition (Cloudy/Sunny)
         self.condition_label = ctk.CTkLabel(self, text="Waiting for data...", font=("Roboto", 18))
@@ -31,24 +42,33 @@ class WeatherDashboard(ctk.CTk):
 
         # D. The Refresh Button
         self.refresh_btn = ctk.CTkButton(self, text="Refresh Data", width=200, command=self.refresh_data)
-        self.refresh_btn.pack(pady=40)
+        self.refresh_btn.pack(pady=20)
+        self.refresh_data()
 
-        self.client = pymongo.MongoClient("mongodb://localhost:27017/")
-        self.db = self.client['weather_app']
-        self.collection = self.db['history']
 
 
     # 4. BUTTON LOGIC (Placeholder for now)
     def refresh_data(self):
         lastest_data = self.collection.find_one(sort=[("timestamp", -1)])
         if lastest_data:
-            self.temp_label.configure(text=f"{lastest_data['temp']}°C")
-            self.condition_label.configure(text=lastest_data['condition'].capitalize())
-            self.timestamp_label.configure(text=f"Last updated: {lastest_data['timestamp'].strftime("%d-%m-%Y %H:%M")}")
+            temp = lastest_data['temp']
+            condition = lastest_data['condition']
+            timestamp = lastest_data['timestamp']
+            
+            self.temp_label.configure(text=f"{temp}°C")
+            if temp < 0:
+                self.temp_label.configure(text_color="#3B8ED0")  # Blue for cold
+            elif temp > 20:
+                self.temp_label.configure(text_color="#FF5733")  # Red for hot
+            else:
+                self.temp_label.configure(text_color="#1B9B37")  # Default color
+            self.condition_label.configure(text=condition.capitalize())
+            self.timestamp_label.configure(text=f"Last updated: {timestamp.strftime("%d-%m-%Y %H:%M")}")
         else:
             self.temp_label.configure(text="--°C")
             self.condition_label.configure(text="No data available.")
 
+        self.after(5000, self.refresh_data)
 
 if __name__ == "__main__":
     app = WeatherDashboard()

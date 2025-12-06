@@ -9,10 +9,11 @@ load_dotenv()
 
 
 API_KEY = os.environ.get('API_KEY')
-CITY = "Helsinki"
+CITY = os.getenv("CITY")
+MONGO_URI = os.getenv("MONGO_URI")
 URL = f"http://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}&units=metric"
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
+client = pymongo.MongoClient(MONGO_URI)
 
 db = client['weather_app']
 
