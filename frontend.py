@@ -26,6 +26,9 @@ class WeatherDashboard(ctk.CTk):
         self.condition_label = ctk.CTkLabel(self, text="Waiting for data...", font=("Roboto", 18))
         self.condition_label.pack(pady=10)
 
+        self.timestamp_label = ctk.CTkLabel(self, text="", font=("Roboto", 12))
+        self.timestamp_label.pack(pady=10)
+
         # D. The Refresh Button
         self.refresh_btn = ctk.CTkButton(self, text="Refresh Data", width=200, command=self.refresh_data)
         self.refresh_btn.pack(pady=40)
@@ -37,10 +40,11 @@ class WeatherDashboard(ctk.CTk):
 
     # 4. BUTTON LOGIC (Placeholder for now)
     def refresh_data(self):
-        lastest_data = self.collection.find_one(sort=[("timestamp", pymongo.DESCENDING)])
+        lastest_data = self.collection.find_one(sort=[("timestamp", -1)])
         if lastest_data:
             self.temp_label.configure(text=f"{lastest_data['temp']}°C")
             self.condition_label.configure(text=lastest_data['condition'].capitalize())
+            self.timestamp_label.configure(text=f"Last updated: {lastest_data['timestamp'].strftime("%d-%m-%Y %H:%M")}")
         else:
             self.temp_label.configure(text="--°C")
             self.condition_label.configure(text="No data available.")
