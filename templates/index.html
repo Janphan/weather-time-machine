@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Analytics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        #temp {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            transition: color 0.3s ease;
+        }
+        #condition {
+            font-size: 1.5rem;
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+        #timestamp {
+            font-size: 0.9rem;
+            margin: 10px 0;
+            opacity: 0.7;
+        }
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+        }
+        button:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            #temp { font-size: 4rem; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Helsinki Weather</h1>
+        <div id="temp">--°C</div>
+        <div id="condition">Waiting for data...</div>
+        <div id="timestamp"></div>
+        <button onclick="refreshData()">Refresh Data</button>
+    </div>
+
+    <script>
+        function refreshData() {
+            fetch('/api/weather')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('temp').textContent = '--°C';
+                        document.getElementById('condition').textContent = 'No data available.';
+                        document.getElementById('timestamp').textContent = '';
+                    } else {
+                        document.getElementById('temp').textContent = data.temp + '°C';
+                        document.getElementById('condition').textContent = data.condition;
+                        document.getElementById('timestamp').textContent = 'Last updated: ' + data.timestamp;
+                        // Color logic (similar to original)
+                        const temp = data.temp;
+                        const color = temp < 0 ? '#3B8ED0' : temp > 20 ? '#FF5733' : '#1B9B37';
+                        document.getElementById('temp').style.color = color;
+                    }
+                });
+        }
+        // Auto-refresh every 5 seconds
+        setInterval(refreshData, 5000);
+        refreshData();  // Initial load
+    </script>
+</body>
+</html>
