@@ -2,6 +2,8 @@
 
 A full-stack Python application that logs real-time weather data to a NoSQL database and visualizes it in a modern web dashboard.
 
+**Live Demo:** [https://weather-time-machine-app-6c83b70b9faf.herokuapp.com/](https://weather-time-machine-app-6c83b70b9faf.herokuapp.com/)
+
 ## 🛠️ Tech Stack
 
 - **Language:** Python 3.10+
