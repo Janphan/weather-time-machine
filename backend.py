@@ -4,19 +4,27 @@ import time
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 load_dotenv()
-
 
 API_KEY = os.environ.get('API_KEY')
 CITY = os.getenv("CITY")
 MONGO_URI = os.getenv("MONGO_URI")
 URL = f"http://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}&units=metric"
 
-client = pymongo.MongoClient(MONGO_URI)
+# Create a new client and connect to the server
+client = MongoClient(MONGO_URI, server_api=ServerApi('1'))
+
+# Test connection (optional, remove in production)
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(f"MongoDB connection error: {e}")
 
 db = client['weather_app']
-
 collection = db['history']
 
 def fetch_and_save():

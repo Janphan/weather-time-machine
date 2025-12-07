@@ -1,11 +1,10 @@
 from flask import Flask, render_template, jsonify
 import pymongo
-from backend import MONGO_URI  # Import from backend.py
+from backend import MONGO_URI, client  # Import from backend.py
 
 app = Flask(__name__)
 
-# MongoDB Setup
-client = pymongo.MongoClient(MONGO_URI)
+# MongoDB Setup (using client from backend)
 db = client['weather_app']
 collection = db['history']
 
