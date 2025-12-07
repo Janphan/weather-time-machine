@@ -58,7 +58,5 @@ def fetch_and_save():
 
 if __name__ == "__main__":
     print(f"Weather Worker started for {CITY}...")
-    print("Press Ctrl+C to stop.")
-    while True:
-        fetch_and_save()
-        time.sleep(3600)  # Wait for 1 hour before fetching again
+    fetch_and_save()
+    print("Data fetch completed. Exiting.")
