@@ -35,4 +35,4 @@ def get_weather():
     return jsonify({'error': 'No data available'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
