@@ -2,6 +2,28 @@
 
 A full-stack Python application that logs real-time weather data to a NoSQL database and visualizes it in a modern web dashboard.
 
+## 🚀 Quick Setup and Deployment Guide
+
+### Prerequisites
+- Python 3.10+
+- Heroku CLI installed
+- MongoDB Atlas account (free tier)
+- OpenWeatherMap API key
+
+### Local Setup
+1. Clone the repo and install dependencies: `pip install -r requirements.txt`
+2. Create `.env` with API keys and MongoDB URI.
+3. Run backend: `python backend.py` (fetches data hourly).
+4. Run web app: `python app.py` (visit `http://127.0.0.1:5000/`).
+
+### Deploy to Heroku
+1. Create Heroku app: `heroku create your-app-name`
+2. Set config vars: `heroku config:set API_KEY=... CITY=... MONGO_URI=...`
+3. Push code: `git push heroku main`
+4. Open app: `heroku open`
+
+For detailed steps, see below.
+
 ## 🛠️ Tech Stack
 
 - **Language:** Python 3.10+

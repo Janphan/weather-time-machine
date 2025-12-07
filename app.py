@@ -23,7 +23,7 @@ def index():
 @app.route('/api/weather')
 def get_weather():
     db = get_db()
-    if db:
+    if db is not None:
         collection = db['history']
         latest_data = collection.find_one(sort=[("timestamp", -1)])
         if latest_data:
